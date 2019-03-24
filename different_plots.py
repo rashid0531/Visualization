@@ -38,7 +38,7 @@ def scatter_plot(input_arr,method):
 
     plt.show()
 
-def whisker_plot(input_arr,plot_title,graphs_save_location,file_name_to_save_as):
+def whisker_plot(input_arr,plot_title,xlabel,ylabel,graphs_save_location,file_name_to_save_as):
 
     figure_value = 1
     fig = plt.figure(figure_value)
@@ -57,10 +57,10 @@ def whisker_plot(input_arr,plot_title,graphs_save_location,file_name_to_save_as)
 
     plt.xticks(xpos, xpos_labels)
 
-    plt.ylabel('Images/second', size=9)
-    plt.xlabel('Number of workers', size=9)
+    plt.ylabel(xlabel, size=9)
+    plt.xlabel(ylabel, size=9)
 
-    plt.savefig(graphs_save_location + file_name_to_save_as, format='eps', dpi=1000)
+    plt.savefig(graphs_save_location + file_name_to_save_as, format='png', dpi=500)
 
     plt.show()
 
@@ -93,15 +93,15 @@ def plot_bar(input_arr,plot_title,xlabel,ylabel,graphs_save_location,file_name_t
     x_pos = np.arange(len(xpos_labels))
 
     for a,b in zip(x_pos, input_arr):
-        plt.text(a, b, str(b), ha = 'center', fontsize= 7)
+        plt.text(a, b, str(b), ha = 'center', fontsize= 11)
 
     plt.bar(x_pos, input_arr, align='center',alpha=0.5)
     plt.xticks(x_pos, xpos_labels)
-    plt.ylabel(ylabel,size=9)
-    plt.xlabel(xlabel,size=9)
+    plt.ylabel(ylabel,size=11)
+    plt.xlabel(xlabel,size=11)
     plt.title(plot_title)
     plt.subplots_adjust(left=0.15, right=0.9, top=0.9, bottom=0.1)
-    plt.savefig(graphs_save_location + file_name_to_save_as, format='eps', dpi=1000)
+    plt.savefig(graphs_save_location + file_name_to_save_as, format='png', dpi=500)
 
     plt.show()
 
@@ -129,21 +129,21 @@ def grouped_bars(arrays,graphs_save_location,xlabel,ylabel,save_as,plt_ttl,legen
 
     psvals = arrays[0]
     for a,b in zip(ind, psvals):
-        plt.text(a, b, str(b), ha = 'center', fontsize= 7)
+        plt.text(a, b, str(b), ha = 'center', fontsize= 11)
 
     rects1 = plt.bar(ind, psvals, width, color=chosen_color[0],edgecolor="black", hatch=patterns[1])
 
     ringvals = arrays[1]
     for a,b in zip(ind+ width, ringvals):
-        plt.text(a, b, str(b), ha = 'center', fontsize= 7)
+        plt.text(a, b, str(b), ha = 'center', fontsize= 11)
     rects2 = plt.bar(ind + width, ringvals, width, color=chosen_color[1],edgecolor="black", hatch=patterns[2])
 
-    ax.set_ylabel(ylabel, size=11)
+    ax.set_ylabel(ylabel, size=13)
 
     # Positioning the xsticks.
     ax.set_xticks(ind+0.13)
 
-    ax.set_xlabel(xlabel, size=11)
+    ax.set_xlabel(xlabel, size=13)
     ax.set_xticklabels(('2', '4', '8'))
     ax.legend((rects1[0], rects2[0]),
               (legends[0], legends[1]),

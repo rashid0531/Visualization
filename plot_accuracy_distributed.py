@@ -71,8 +71,6 @@ def get_accuracy_throughput(experiment_name,file_name):
     losses = [losses[i] for i in indices]
     examples_per_seconds = [examples_per_seconds[i] for i in indices]
 
-    #print(len(losses), "----" , len(examples_per_seconds))
-
     # Filterd list of examples_per_seconds which doesn't contain empty values or "INFO:tensorflow:Saving timeline ...".
     examples_per_seconds = list(filter(lambda x: x != "", examples_per_seconds))
     examples_per_seconds = list(map(lambda x:x.strip().split(" ")[0], examples_per_seconds))
@@ -190,11 +188,10 @@ def visualize_experiments(which_experiment,input_path,batch_size_per_worker,tota
     if ("ring" in which_experiment):
 
         if ("4" in which_experiment):
-            plot_ttl = ('Box Plot : Throughput - Ring all-reduce (npc = {})').format(str(4))
 
-            plot_ttl = plot_ttl.replace("npc", "$\it{npc}$")
+            bar_thrput_ttl = 'Average Throughput - Ring AllReduce'
 
-            file_name_to_save_as = "comparison_boxplot_4cores_ring.eps"
+            bar_save_as = "thrput_bar_ring_npc" + str(4) + ".png"
 
 
 
@@ -206,13 +203,16 @@ def visualize_experiments(which_experiment,input_path,batch_size_per_worker,tota
             file_name_to_save_as = "comparison_boxplot_8cores_ring.eps"
 
 
-    udplots.whisker_plot(examples_per_seconds_for_all_experiments,plot_ttl,graphs_save_location,file_name_to_save_as)
+    # udplots.whisker_plot(examples_per_seconds_for_all_experiments,plot_ttl,graphs_save_location,file_name_to_save_as)
 
 
     avg_throughput = []
     variances = []
     stdeviation = []
     for i in range(0,len(examples_per_seconds_for_all_experiments)):
+
+        if i == 2:
+            print(np.sort(examples_per_seconds_for_all_experiments[i])[:23])
 
         avg_throughput.append(np.mean(examples_per_seconds_for_all_experiments[i]))
         variances.append(np.var(examples_per_seconds_for_all_experiments[i]))
@@ -229,12 +229,8 @@ def visualize_experiments(which_experiment,input_path,batch_size_per_worker,tota
 
     ylabel = 'Images/second'
     xlabel = 'Number of workers'
-    udplots.plot_bar(avg_throughput,bar_thrput_ttl,xlabel,ylabel,graphs_save_location,bar_save_as)
+    #udplots.plot_bar(avg_throughput,bar_thrput_ttl,xlabel,ylabel,graphs_save_location,bar_save_as)
 
-
-def plot_total_completion_time(array,title):
-
-    udplots.plot_bar(array,plot_title= title)
 
 
 if __name__ == "__main__":
@@ -255,30 +251,30 @@ if __name__ == "__main__":
 
     number_of_workers = [2,4,8]
 
-    # input_path = "/Users/Rashid/Desktop/thesis_results/Distributed/1_paramserver/"
-    #input_path = "/Volumes/Samsung_T5/results/ring/results/ring_reduce_horovod/non_linear_learning_rate/8_threads/"
+
+    # input_path = "/Volumes/Samsung_T5/results/ring/results/ring_reduce_horovod/non_linear_learning_rate/4_threads/"
+    #
+    # which_experiment = "Distributed_ring_4cores"
 
     input_path = "/Volumes/Samsung_T5/results/ps/thesis_results/4_threads/1_paramserver/"
     which_experiment = "Distributed_ps_4cores"
-
-    # input_path = "/Volumes/Samsung_T5/results/ps/thesis_results/8_threads/1_paramserver/"
-    # which_experiment = "Distributed_ps_8cores"
 
     visualize_experiments(which_experiment,input_path,batch_size_per_worker,total_number_of_images_in_dataset,number_of_epochs,number_of_workers,graphs_save_location)
 
     # Average Thoughput
 
-    ps_8_avg_thr = [47.28, 85.48, 134.17]
     ps_4_avg_thr = [48.41, 82.16, 156.2]
-    ps_4vs8_cores_thrput = []
-    ps_4vs8_cores_thrput.append(ps_8_avg_thr)
-    ps_4vs8_cores_thrput.append(ps_4_avg_thr)
+    ring_4_avg_thr = [47.89, 81.92, 162.49]
 
-    save_as = "comparison_ps_avgthrput_4vs8.png"
-    plt_title = " Average Throughput - Parameter Server"
-    legends = ['$\it{npc}$ = 8', '$\it{npc}$ = 4']
+    ps_vs_ring_thrput = []
+    ps_vs_ring_thrput.append(ps_4_avg_thr)
+    ps_vs_ring_thrput.append(ring_4_avg_thr)
+
+    save_as = "comparison_avgthrput_psvsring.png"
+    plt_title = " Comparison of Average Throughput"
+    legends = ['Parameter Server', 'Ring AllReduce']
     legend_loc = "upper left"
     xlabel = 'Number of workers'
     ylabel = 'Images/second'
 
-    #udplots.grouped_bars(ps_4vs8_cores_thrput, graphs_save_location,xlabel,ylabel, save_as, plt_title, legends,legend_loc)
+    # udplots.grouped_bars(ps_vs_ring_thrput, graphs_save_location,xlabel,ylabel, save_as, plt_title, legends,legend_loc)
